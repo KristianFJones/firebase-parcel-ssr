@@ -6,9 +6,9 @@ const exec = util.promisify(require('child_process').exec)
 
 async function BuildUI() {
   const JSOptions: ParcelOptions = {
-    outDir: 'dist/',
+    outDir: 'dist',
     minify: true,
-    watch: false,
+    watch: true,
     contentHash: false
   }
 

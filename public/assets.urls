@@ -1,1 +1,2 @@
 client: ../ui/client.tsx
+server: ../ui/server.tsx
