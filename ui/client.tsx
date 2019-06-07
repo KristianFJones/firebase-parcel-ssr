@@ -3,23 +3,26 @@ import ReactDOM, { Renderer } from 'react-dom'
 import { App as AppComponent } from 'ui/App'
 import { ConfigProvider } from 'ui/components/ConfigProvider'
 import { initApollo } from 'ui/lib/initApollo'
-import { ApolloProvider } from 'react-apollo-hooks';
+import { ApolloProvider } from 'react-apollo-hooks'
+import { setStylesTarget } from 'typestyle'
+import { HeadProvider } from 'ui/components/HeadProvider';
 
 async function render(renderFunction: Renderer, App: typeof AppComponent) {
   const serviceWKPath = '/service-worker.js'
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
       navigator.serviceWorker
-        .register(serviceWKPath, {scope: '/'})
+        .register(serviceWKPath, { scope: '/' })
         .then(function(registration) {
-          console.log('SW registered: ', registration);
+          console.log('SW registered: ', registration)
         })
         .catch(function(registrationError) {
-          console.log('SW registration failed: ', registrationError);
-        });
-    });
+          console.log('SW registration failed: ', registrationError)
+        })
+    })
   }
   renderFunction(
+    <HeadProvider tags={...window.APP_STATE.HEAD}>
     <ConfigProvider {...window.APP_STATE.CONFIG}>
       <ApolloProvider
         client={initApollo({
@@ -29,9 +32,12 @@ async function render(renderFunction: Renderer, App: typeof AppComponent) {
       >
         <App />
       </ApolloProvider>
-    </ConfigProvider>,
+    </ConfigProvider>
+    </HeadProvider>,
     document.getElementById('app'),
   )
+  const stylesTarget = document.getElementById('styles')
+  if (stylesTarget) setStylesTarget(stylesTarget)
 }
 
 render(ReactDOM.hydrate, AppComponent)

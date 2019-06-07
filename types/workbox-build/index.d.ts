@@ -11,8 +11,12 @@ declare module "workbox-build" {
       handler: 'CacheFirst' | 'CacheOnly' | 'NetworkFirst' | 'NetworkOnly' | 'StaleWhileRevalidate',
       options: {
         cacheName: string
+        cacheableResponse?: {
+          statuses: number[]
+        }
         expiration: {
           maxEntries: number
+          maxRetentionTime?: number
         }
       }
     }[]
