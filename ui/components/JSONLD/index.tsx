@@ -28,3 +28,7 @@ export function useBreadCrumbJsonLd(itemListElements: ItemListElements[] = []) {
 
   return AddTag({ type: 'script', script: jslonld, texttype: 'application/ld+json' })
 }
+
+export function useKeywords(keywords: string[]) {
+  return AddTag({ type: 'meta', name: 'keywords', content: keywords.join(',') })
+}
