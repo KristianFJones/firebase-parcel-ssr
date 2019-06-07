@@ -1,4 +1,5 @@
 import React, { useContext, createContext, ReactNode } from 'react'
+import { globalHistory } from '@reach/router'
 import { NewMetaTagParams } from './metaTypes'
 
 interface NewScriptTagParams {
@@ -30,7 +31,27 @@ interface HeadProviderProps {
 }
 
 export function HeadProvider(props: HeadProviderProps) {
-  const { children, tags } = props
+  let { children, tags } = props
+  globalHistory.listen(() => {
+    if (typeof window !== 'undefined') {
+      const metaElements = Array.from(
+        document.getElementsByTagName('head')[0].getElementsByTagName('meta'),
+      )
+
+      const scriptElements = Array.from(
+        document.getElementsByTagName('head')[0].getElementsByTagName('script'),
+      )
+
+      metaElements.map((itm) => {
+        if(itm.parentNode) itm.parentNode.removeChild(itm)
+      })
+
+      scriptElements.map((itm) => {
+        if(itm.parentNode) itm.parentNode.removeChild(itm)
+      })
+      
+    }
+  })
   return (
     <HeadContext.Provider
       value={{
