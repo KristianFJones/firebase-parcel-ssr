@@ -3,7 +3,7 @@
     "target": "es2017",
     "module": "commonjs",
     "lib": ["dom", "es2017", "esnext.asynciterable"],
-    "allowJs": false,
+    "allowJs": true,
     "jsx": "react",
     "outDir": "./dist",
     "strict": true,

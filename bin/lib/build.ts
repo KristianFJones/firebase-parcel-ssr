@@ -11,10 +11,10 @@ export async function build(watch: boolean = false) {
   await copy('package-lock.json', 'dist/package-lock.json')
 
   await run('tsc --build functions/tsconfig.json')
-
-  const bundler = new ParcelBundler(['ui/server.tsx', 'ui/client.urls', 'ui/manifest.json'], {
+  const bundler = new ParcelBundler(['ui/server.tsx', 'ui/client.js'], {
     outDir: 'dist/public',
     watch,
+    minify: !watch,
   })
   await bundler.bundle()
 }

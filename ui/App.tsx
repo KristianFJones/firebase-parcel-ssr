@@ -1,9 +1,11 @@
-import { Link } from '@reach/router'
+import { Link, Router } from '@reach/router'
 import React from 'react'
 import { useConfig } from 'ui/components/ConfigProvider'
-import { Routes } from 'ui/routes'
+import importedComponent from 'react-imported-component'
 
-export function App() {
+const Loader = importedComponent(() => import('./routes/Loading'))
+
+export default function App() {
   const { baseUrl } = useConfig()
   return (
     <div>
@@ -17,9 +19,14 @@ export function App() {
         <li>
           <Link to='/query'>Query</Link>
         </li>
+        <li>
+          <Link to='/load'>Load</Link>
+        </li>
       </ul>
       <h3>{baseUrl}</h3>
-      <Routes />
+      <Router>
+        <Loader path='/load' />
+      </Router>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import React from 'react'
 import { useKeywords, useDescription } from 'ui/components/useSEO'
 import { useTitle } from 'ui/components/HeadProvider'
 
-export function HomeRoute(props: RouteComponentProps) {
+export default function HomeRoute(props: RouteComponentProps) {
   useTitle('Index Page')
   useKeywords(['Defrex', 'KristianFJones'])
   useDescription('Firebase React SSR Demo')
