@@ -2,7 +2,7 @@ import { Readable } from 'stream'
 import { ServerLocation } from '@reach/router'
 import { Request, Response } from 'express'
 import React from 'react'
-import { renderToNodeStream } from 'react-dom/server'
+import { renderToNodeStream, renderToString } from 'react-dom/server'
 import { getProjectStyles, createStyleStream } from 'used-styles'
 import MultiStream from 'multistream'
 import { App } from './App'
@@ -81,6 +81,7 @@ export async function uiServer(req: Request, res: Response, config: Config) {
 
   htmlStream.on('end', () => {
     headerStream.push(`\n${printDrainHydrateMarks(streamUID)}`)
+    headerStream.push(renderToString(<>{head}</>))
     headerStream.push(null)
     styledStream.end()
   })
