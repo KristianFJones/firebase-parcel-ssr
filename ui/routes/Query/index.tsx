@@ -1,7 +1,7 @@
 import { RouteComponentProps } from '@reach/router'
 import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
-import { useTitle } from 'ui/components/HeadProvider'
+import { useTitle } from '../../components/HeadProvider'
 import gql from './query.graphql'
 
 export function QueryRoute(props: RouteComponentProps) {

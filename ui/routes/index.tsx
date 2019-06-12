@@ -1,15 +1,19 @@
 import { Router } from '@reach/router'
 import React from 'react'
-import { ExampleRoute } from 'ui/routes/Example'
-import { HomeRoute } from 'ui/routes/Home'
-import { QueryRoute } from 'ui/routes/Query'
+import { LazyBoundary, lazy } from 'react-imported-component'
+
+const Example = lazy(() => import('./Example'))
+const Index = lazy(() => import('./Home'))
 
 export function Routes() {
+  Example.preload()
+  Index.preload()
   return (
-    <Router>
-      <HomeRoute path='/' />
-      <ExampleRoute path='/example' />
-      <QueryRoute path='/query' />
-    </Router>
+    <LazyBoundary fallback={<div>Loading</div>}>
+      <Router>
+        <Index path='/' />
+        <Example path='/example' />
+      </Router>
+    </LazyBoundary>
   )
 }

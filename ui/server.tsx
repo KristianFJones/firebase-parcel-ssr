@@ -1,60 +1,87 @@
-import { isRedirect, ServerLocation } from '@reach/router'
+import { Readable } from 'stream'
+import { ServerLocation } from '@reach/router'
 import { Request, Response } from 'express'
 import React from 'react'
-import { ApolloProvider, getMarkupFromTree } from 'react-apollo-hooks'
-import { renderToString } from 'react-dom/server'
-import { App } from 'ui/App'
-import { Config, ConfigProvider } from 'ui/components/ConfigProvider'
-import { HeadProvider, resetTagID } from 'ui/components/HeadProvider'
-import { Document } from 'ui/Document'
-import { initApollo } from 'ui/lib/initApollo'
+import { renderToNodeStream } from 'react-dom/server'
+import { getProjectStyles, createStyleStream } from 'used-styles'
+import MultiStream from 'multistream'
+import { App } from './App'
+import { Config, ConfigProvider } from './components/ConfigProvider'
+import { HeadProvider, resetTagID } from './components/HeadProvider'
+import { ImportedStream, printDrainHydrateMarks } from 'react-imported-component'
 
-export default async function(req: Request, res: Response, config: Config) {
-  const clientAssetsFile = './client.json'
-  const clientAssets = await import(clientAssetsFile)
-  const scripts = Object.values(clientAssets).filter(
-    (script) => typeof script === 'string',
-  ) as string[]
+const readable = () => {
+  const s = new Readable()
+  s._read = () => true
+  return s
+}
 
-  const client = initApollo({ baseUrl: config.baseUrl })
+const readableString = (string: string) => {
+  const s = new Readable()
+  s.push(string)
+  s.push(null)
+  s._read = () => true
+  return s
+}
 
+const stylesLookup = getProjectStyles(__dirname)
+
+export async function uiServer(req: Request, res: Response, config: Config) {
+  const clientAssetsFile = '../public/client.json'
+  const clientAssets = import(clientAssetsFile)
   resetTagID()
 
   let head: JSX.Element[] = []
 
-  let html = ''
-  try {
-    html = await getMarkupFromTree({
-      renderFunction: renderToString,
-      tree: (
-        <ServerLocation url={req.url}>
-          <ConfigProvider {...config}>
-            <HeadProvider tags={head}>
-              <ApolloProvider client={client}>
-                <App />
-              </ApolloProvider>
-            </HeadProvider>
-          </ConfigProvider>
-        </ServerLocation>
-      ),
-    })
-  } catch (error) {
-    if (isRedirect(error)) {
-      res.redirect(error.uri)
-    } else {
-      throw error
-    }
-  }
+  let streamUID = 0
 
-  const state = client.cache.extract()
-
-  const document = renderToString(
-    <Document
-      html={html}
-      state={{ APOLLO_STATE: state, CONFIG: config }}
-      scripts={scripts}
-      head={head}
-    />,
+  const htmlStream = renderToNodeStream(
+    <ServerLocation url={req.url}>
+      <ConfigProvider {...config}>
+        <HeadProvider tags={head}>
+          <ImportedStream takeUID={(uid) => (streamUID = uid)}>
+            <App />
+          </ImportedStream>
+        </HeadProvider>
+      </ConfigProvider>
+    </ServerLocation>,
   )
-  res.status(200).send(`<!DOCTYPE html>${document}`)
+
+  const headerStream = readable()
+
+  const lookup = await stylesLookup
+  const styledStream = createStyleStream(
+    lookup,
+    (style) => `<link href="dist/${style}" rel="stylesheet">\n`,
+  )
+
+  res.write(
+    `<!DOCTYPE html><html><head><link rel="icon" 
+    type="image/png" 
+    href="/icons-192.png"><link rel="manifest" href="/manifest.json"><meta name="viewport" content="width=device-width, initial-scale=1"><script type="application/javascript" async src="${
+      (await clientAssets).client
+    }" />`,
+  )
+
+  const middleStream = readableString('</head><body><div id="app">')
+  const endStream = readableString(
+    `</div><script type="application/javascript">window.APP_STATE = { CONFIG: ${JSON.stringify(
+      config,
+    )} };</script></body></html>`,
+  )
+
+  const streams = [headerStream, middleStream, styledStream, endStream]
+
+  MultiStream(streams).pipe(res)
+
+  htmlStream.pipe(
+    styledStream,
+    { end: false },
+  )
+
+  htmlStream.on('end', () => {
+    headerStream.push(`\n${printDrainHydrateMarks(streamUID)}`)
+    headerStream.push(null)
+    styledStream.end()
+  })
 }

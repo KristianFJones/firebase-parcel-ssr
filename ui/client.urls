@@ -1,1 +1,2 @@
 client: ../ui/client.tsx
+stuff: ../ui/imported.js

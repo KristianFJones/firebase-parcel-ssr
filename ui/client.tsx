@@ -1,10 +1,6 @@
 import React from 'react'
-import { ApolloProvider } from 'react-apollo-hooks'
 import ReactDOM, { Renderer } from 'react-dom'
-import { App as AppComponent } from 'ui/App'
-import { ConfigProvider } from 'ui/components/ConfigProvider'
-import { initApollo } from 'ui/lib/initApollo'
-import { HeadProvider } from './components/HeadProvider'
+import { rehydrateMarks } from 'react-imported-component';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async function() {
@@ -13,29 +9,27 @@ if ('serviceWorker' in navigator) {
   })
 }
 
-async function render(renderFunction: Renderer, App: typeof AppComponent) {
+async function render(renderFunction: Renderer, App: typeof import('./App').App) {
+  const ConfigImport = import('./components/ConfigProvider')
+  const HeadImport = import('./components/HeadProvider')
+
+  const [{ ConfigProvider }, { HeadProvider }] = await Promise.all([ConfigImport, HeadImport])
+  await rehydrateMarks()
   renderFunction(
     <HeadProvider tags={[]}>
       <ConfigProvider {...window.APP_STATE.CONFIG}>
-        <ApolloProvider
-          client={initApollo({
-            baseUrl: window.APP_STATE.CONFIG.baseUrl,
-            initialState: window.APP_STATE.APOLLO_STATE,
-          })}
-        >
-          <App />
-        </ApolloProvider>
+        <App />
       </ConfigProvider>
     </HeadProvider>,
     document.getElementById('app'),
   )
 }
 
-render(ReactDOM.hydrate, AppComponent)
+render(ReactDOM.hydrate, require('./App').App)
 
 const hot = (module as any).hot
 if (hot && hot.accept) {
   hot.accept(() => {
-    render(ReactDOM.render, require('ui/App').App)
+    render(ReactDOM.render, require('./App').App)
   })
 }
