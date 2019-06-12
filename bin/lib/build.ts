@@ -11,9 +11,12 @@ export async function build(watch: boolean = false) {
   await copy('package.json', 'dist/package.json')
   await copy('package-lock.json', 'dist/package-lock.json')
 
-  const bundler = new ParcelBundler(['ui/client.urls', 'ui/manifest.json'], {
+  const bundler = new ParcelBundler(['ui/client.urls'], {
     outDir: 'dist/public',
-    watch
+    watch,
+    target: 'browser',
+    bundleNodeModules: true,
+    minify: true
   })
   await bundler.bundle()
 
@@ -21,7 +24,7 @@ export async function build(watch: boolean = false) {
     outDir: 'dist/functions',
     watch,
     contentHash: false,
-    target: 'node',
+    target: 'node'
   })
   await fnbundler.bundle()
 

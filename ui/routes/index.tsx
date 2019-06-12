@@ -1,9 +1,11 @@
 import { Router } from '@reach/router'
 import React from 'react'
-import { LazyBoundary, lazy } from 'react-imported-component'
+import importComponent, { LazyBoundary, lazy } from 'react-imported-component'
+import LoadingComponent from '../components/Loading';
 
-const Example = lazy(() => import('./Example'))
-const Index = lazy(() => import('./Home'))
+const Example = importComponent(() => import('./Example'), { LoadingComponent })
+const Index = importComponent(() => import('./Home'), { LoadingComponent, async: true })
+const Query = importComponent(() => import('./Query'), { LoadingComponent })
 
 export function Routes() {
   Example.preload()
@@ -13,6 +15,7 @@ export function Routes() {
       <Router>
         <Index path='/' />
         <Example path='/example' />
+        <Query path='/query' />
       </Router>
     </LazyBoundary>
   )

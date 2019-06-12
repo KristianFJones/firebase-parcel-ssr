@@ -7,6 +7,7 @@
     const applicationImports = [
       () => import('./routes/Example'),
       () => import('./routes/Home'),
+      () => import('./routes/Query'),
     ];
     
     assignImportedComponents(applicationImports);
