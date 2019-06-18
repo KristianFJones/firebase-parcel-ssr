@@ -14,7 +14,9 @@ export const TestingRoute: React.FunctionComponent<RouteComponentProps> = (props
       <span className={bodyStyle}>
         <label className={labelStyle}>Testing: </label>
         <Link to='/'>
-          {props.location && props.location.state ? props.location.state.IP : 'NO IP Provided'}
+          {props.location && props.location.state && props.location.state.IP
+            ? props.location.state.IP
+            : 'NO IP Provided'}
         </Link>
       </span>
     </div>

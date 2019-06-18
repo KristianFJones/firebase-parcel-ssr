@@ -24,7 +24,7 @@ export default async function(req: Request, res: Response, config: Config) {
 
   let STF: any
   let PropIDs: number[] = []
-
+  console.log('Req Path', req.path)
   let html = ''
   try {
     try {

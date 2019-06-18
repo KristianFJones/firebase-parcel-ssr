@@ -1,4 +1,4 @@
-import { RouteComponentProps, Link } from '@reach/router'
+import { RouteComponentProps } from '@reach/router'
 import { v4 } from 'public-ip'
 import React, { useContext } from 'react'
 import { useTitle } from 'ui/components/HeadProvider'
@@ -21,10 +21,10 @@ export const HomeRoute: React.FunctionComponent<RouteComponentProps> = (props) =
       <span className={titleStyle}>IP Address</span>
       <span className={bodyStyle}>
         <label className={labelStyle}>Public IP: </label>
-        <Link to='/testing' state={{ IP }}>
-          {IP}
-        </Link>
+        {IP}
       </span>
     </div>
   )
 }
+
+HomeRoute.displayName = 'Home Route'

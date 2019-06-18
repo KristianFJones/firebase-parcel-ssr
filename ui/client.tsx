@@ -20,13 +20,13 @@ async function render(renderFunction: Renderer, App: typeof AppComponent) {
   if (StyleElement) setStylesTarget(StyleElement)
   STF = window.APP_STATE.PROPS
   renderFunction(
-    <HeadProvider tags={[]}>
-      <ConfigProvider {...window.APP_STATE.CONFIG}>
+    <ConfigProvider {...window.APP_STATE.CONFIG}>
+      <HeadProvider tags={[]}>
         <PropProvider props={STF} ids={window.APP_STATE.PROPIDs}>
           <App />
         </PropProvider>
-      </ConfigProvider>
-    </HeadProvider>,
+      </HeadProvider>
+    </ConfigProvider>,
     document.getElementById('app'),
   )
 }

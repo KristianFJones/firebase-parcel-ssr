@@ -44,7 +44,7 @@ export const PropProvider = ({ req, children, props, ids }: PropProviderProps) =
 
   globalHistory.listen(async () => {
     ids = []
-    await timeout(200)
+    await timeout(190)
     setProp(await Props)
   })
 

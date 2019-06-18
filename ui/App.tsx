@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes } from 'ui/routes'
 import { style, cssRule } from 'typestyle'
-import { AppBar } from './components/AppBar'
+import { AppHeader } from './components/AppTop'
 
 cssRule('html, body', {
   margin: 0,
@@ -24,7 +24,7 @@ const divStyle = style({
 export const App: React.FunctionComponent = () => {
   return (
     <>
-      <AppBar />
+      <AppHeader />
       <div className={divStyle}>
         <Routes />
       </div>

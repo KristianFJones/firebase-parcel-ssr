@@ -14,6 +14,7 @@ export async function build(watch: boolean = false) {
 
   const bundler = new ParcelBundler(['ui/server.tsx', 'ui/client.urls', 'ui/manifest.json'], {
     outDir: 'dist/public',
+    contentHash: false,
     watch,
   })
   await bundler.bundle()
