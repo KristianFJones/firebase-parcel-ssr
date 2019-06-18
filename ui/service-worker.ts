@@ -4,4 +4,6 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox
 
 declare const workbox: typeof import('workbox-sw')
 
-workbox.routing.registerRoute(new RegExp('.*.js'), new workbox.strategies.NetworkFirst())
+workbox.routing.registerRoute(new RegExp('.*.js'), new workbox.strategies.CacheFirst())
+
+workbox.routing.registerRoute(new RegExp('.*api.*'), new workbox.strategies.NetworkFirst())

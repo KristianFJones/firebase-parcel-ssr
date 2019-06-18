@@ -1,15 +1,18 @@
 import { Router } from '@reach/router'
 import React from 'react'
-import { ExampleRoute } from 'ui/routes/Example'
-import { HomeRoute } from 'ui/routes/Home'
-import { QueryRoute } from 'ui/routes/Query'
+import { HomeRoute } from './Home'
+import { TestingRoute } from './Testing'
 
-export function Routes() {
+interface Route {
+  path: string
+  thing: any
+}
+
+export const Routes: React.FunctionComponent = () => {
   return (
     <Router>
       <HomeRoute path='/' />
-      <ExampleRoute path='/example' />
-      <QueryRoute path='/query' />
+      <TestingRoute path='/testing' />
     </Router>
   )
 }

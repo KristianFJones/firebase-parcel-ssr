@@ -21,6 +21,8 @@
   ],
   "dependencies": {
     "@reach/router": "^1.2.1",
+    "@rmwc/drawer": "^5.5.2",
+    "@rmwc/list": "^5.5.2",
     "@types/node-fetch": "^2.3.5",
     "apollo-boost": "^0.4.1",
     "apollo-server-cloud-functions": "^2.6.1",
@@ -39,12 +41,14 @@
     "node-typescript-compiler": "^2.0.0",
     "ora": "^3.4.0",
     "parcel-plugin-assets-list": "^1.7.1",
+    "public-ip": "^3.1.0",
     "react": "^16.8.6",
     "react-apollo-hooks": "^0.4.5",
     "react-dom": "^16.8.6",
     "reflect-metadata": "^0.1.13",
     "require-from-string": "^2.0.2",
     "type-graphql": "^0.17.4",
+    "typestyle": "^2.0.2",
     "ui": "^0.2.4",
     "workbox": "0.0.0"
   },

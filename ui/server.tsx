@@ -1,43 +1,59 @@
 import { isRedirect, ServerLocation } from '@reach/router'
 import { Request, Response } from 'express'
 import React from 'react'
-import { ApolloProvider, getMarkupFromTree } from 'react-apollo-hooks'
 import { renderToString } from 'react-dom/server'
+import { getStyles } from 'typestyle'
 import { App } from 'ui/App'
 import { Config, ConfigProvider } from 'ui/components/ConfigProvider'
 import { HeadProvider, resetTagID } from 'ui/components/HeadProvider'
 import { Document } from 'ui/Document'
-import { initApollo } from 'ui/lib/initApollo'
+import { resetProps, PropProvider, Props, resetPageID } from './components/PropsProvider'
 
 export default async function(req: Request, res: Response, config: Config) {
+  resetProps()
   const clientAssetsFile = './client.json'
   const clientAssets = await import(clientAssetsFile)
   const scripts = Object.values(clientAssets).filter(
     (script) => typeof script === 'string',
   ) as string[]
 
-  const client = initApollo({ baseUrl: config.baseUrl })
-
   resetTagID()
+  resetPageID()
 
   let head: JSX.Element[] = []
 
+  let STF: any
+  let PropIDs: number[] = []
+
   let html = ''
   try {
-    html = await getMarkupFromTree({
-      renderFunction: renderToString,
-      tree: (
+    try {
+      renderToString(
         <ServerLocation url={req.url}>
           <ConfigProvider {...config}>
             <HeadProvider tags={head}>
-              <ApolloProvider client={client}>
+              <PropProvider req={req} props={await Props} ids={PropIDs}>
                 <App />
-              </ApolloProvider>
+              </PropProvider>
             </HeadProvider>
           </ConfigProvider>
-        </ServerLocation>
-      ),
-    })
+        </ServerLocation>,
+      )
+      STF = await Props
+    } catch {
+      STF = await Props
+    }
+    html = renderToString(
+      <ServerLocation url={req.url}>
+        <ConfigProvider {...config}>
+          <HeadProvider tags={head}>
+            <PropProvider req={req} props={STF} ids={PropIDs}>
+              <App />
+            </PropProvider>
+          </HeadProvider>
+        </ConfigProvider>
+      </ServerLocation>,
+    )
   } catch (error) {
     if (isRedirect(error)) {
       res.redirect(error.uri)
@@ -46,15 +62,15 @@ export default async function(req: Request, res: Response, config: Config) {
     }
   }
 
-  const state = client.cache.extract()
-
   const document = renderToString(
     <Document
       html={html}
-      state={{ APOLLO_STATE: state, CONFIG: config }}
+      state={{ CONFIG: config, PROPS: STF, PROPIDs: PropIDs }}
       scripts={scripts}
       head={head}
+      css={getStyles()}
     />,
   )
+
   res.status(200).send(`<!DOCTYPE html>${document}`)
 }

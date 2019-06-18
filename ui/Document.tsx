@@ -1,10 +1,10 @@
-import { NormalizedCacheObject } from 'apollo-boost'
 import React from 'react'
 import { Config } from 'ui/components/ConfigProvider'
 
 export interface AppState {
-  APOLLO_STATE: NormalizedCacheObject
   CONFIG: Config
+  PROPS: any
+  PROPIDs: number[]
 }
 
 interface DocumentProps {
@@ -26,6 +26,10 @@ export function Document({ html, css, scripts, state, head }: DocumentProps) {
           scripts.map(
             (src, index) => src && <link rel='preload' href={src} as='script' key={index} />,
           )}
+        {scripts && (
+          <link rel='stylesheet' type='text/css' href={scripts[0].replace('.js', '.css')} />
+        )}
+
         {css ? <style id='styles'>{css}</style> : null}
       </head>
       <body>
@@ -33,10 +37,11 @@ export function Document({ html, css, scripts, state, head }: DocumentProps) {
 
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.APP_STATE = { APOLLO_STATE:${JSON.stringify(state.APOLLO_STATE).replace(
-              /</g,
-              '\\u003c',
-            )}, CONFIG: ${JSON.stringify(state.CONFIG)} };`,
+            __html: `window.APP_STATE = { CONFIG: ${JSON.stringify(
+              state.CONFIG,
+            )}, PROPS: ${JSON.stringify(state.PROPS)}, PROPIDs: ${JSON.stringify(
+              state.PROPIDs,
+            )} };`,
           }}
         />
         {scripts && scripts.map((src, index) => <script key={index} src={src} async />)}

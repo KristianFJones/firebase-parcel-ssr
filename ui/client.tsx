@@ -1,10 +1,10 @@
 import React from 'react'
-import { ApolloProvider } from 'react-apollo-hooks'
 import ReactDOM, { Renderer } from 'react-dom'
 import { App as AppComponent } from 'ui/App'
 import { ConfigProvider } from 'ui/components/ConfigProvider'
-import { initApollo } from 'ui/lib/initApollo'
 import { HeadProvider } from './components/HeadProvider'
+import { setStylesTarget } from 'typestyle'
+import { PropProvider } from './components/PropsProvider'
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async function() {
@@ -13,18 +13,18 @@ if ('serviceWorker' in navigator) {
   })
 }
 
+let STF: any
+
 async function render(renderFunction: Renderer, App: typeof AppComponent) {
+  const StyleElement = document.getElementById('styles')
+  if (StyleElement) setStylesTarget(StyleElement)
+  STF = window.APP_STATE.PROPS
   renderFunction(
     <HeadProvider tags={[]}>
       <ConfigProvider {...window.APP_STATE.CONFIG}>
-        <ApolloProvider
-          client={initApollo({
-            baseUrl: window.APP_STATE.CONFIG.baseUrl,
-            initialState: window.APP_STATE.APOLLO_STATE,
-          })}
-        >
+        <PropProvider props={STF} ids={window.APP_STATE.PROPIDs}>
           <App />
-        </ApolloProvider>
+        </PropProvider>
       </ConfigProvider>
     </HeadProvider>,
     document.getElementById('app'),
