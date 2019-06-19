@@ -61,7 +61,7 @@ export const AppBar: React.FunctionComponent<AppBarProps> = ({ menuClick }) => {
           <svg
             className={MenuIconStyle}
             viewBox='0 0 24 24'
-            onClick={() => toggleOpen((state) => true)}
+            onClick={() => toggleOpen((state) => !state)}
           >
             <path fill='#000000' d='M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z' />
           </svg>

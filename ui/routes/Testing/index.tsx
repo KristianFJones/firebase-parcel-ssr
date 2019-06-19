@@ -4,7 +4,7 @@ import { useTitle } from '~/components/HeadProvider'
 import { divStyle, titleStyle, bodyStyle, labelStyle } from '~/components/styles'
 import { useProps } from '~/components/PropsProvider'
 
-export const TestingRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
+const TestingRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
   useProps(async () => ({ hello: 'test' }))
 
   useTitle('Example Page')
@@ -22,3 +22,5 @@ export const TestingRoute: React.FunctionComponent<RouteComponentProps> = (props
     </div>
   )
 }
+
+export default TestingRoute

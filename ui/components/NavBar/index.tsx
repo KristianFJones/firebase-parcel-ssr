@@ -10,7 +10,7 @@ import { Nav } from '../AppTop'
 
 export const NavBar: React.FunctionComponent = () => {
   let { req } = useContext(PropContext)
-  let { open } = useContext(Nav)
+  let { open, toggleOpen } = useContext(Nav)
 
   const path = useMemo(() => (req ? req.path : window.location.pathname), [
     req ? req.path : window.location.pathname,
@@ -22,10 +22,11 @@ export const NavBar: React.FunctionComponent = () => {
         <List
           onAction={({ detail }) => {
             navigate(routes[detail].to)
+            toggleOpen((state) => !state)
           }}
         >
-          {routes.map(({ to, label }, index) => (
-            <ListItem activated={path === to} key={index}>
+          {routes.map(({ to, label, Component }, index) => (
+            <ListItem activated={path === to} key={index} onMouseOver={() => Component.preload()}>
               {label}
             </ListItem>
           ))}

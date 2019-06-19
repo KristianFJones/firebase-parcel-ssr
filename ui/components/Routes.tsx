@@ -1,26 +1,39 @@
 import React from 'react'
 import Loadable from 'react-loadable'
-import { TestingRoute } from '~/routes/Testing'
-import { RouteComponentProps } from '@reach/router'
-import { CountRoute } from '~/routes/Count'
+
+export const Loader = () => <div>Loading</div>
+
+const HomeRoute = Loadable({
+  loader: () => import('~routes/Home'),
+  modules: ['routes/Home'],
+  loading: Loader,
+  delay: 500,
+})
 
 interface NavItem {
   label: string
   to: string
-  Component: React.FunctionComponent<RouteComponentProps> | Loadable.LoadableComponent
+  Component: typeof HomeRoute
 }
 
 const ShareTarget = Loadable({
   loader: () => import('~routes/Share'),
   modules: ['routes/Share'],
-  loading: () => <div>Loading</div>,
+  loading: Loader,
   delay: 500,
 })
 
-const HomeRoute = Loadable({
-  loader: () => import('~routes/Home'),
-  modules: ['routes/Home'],
-  loading: () => <div>Loading</div>,
+const CountRoute = Loadable({
+  loader: () => import('~routes/Count'),
+  modules: ['routes/Count'],
+  loading: Loader,
+  delay: 500,
+})
+
+const TestingRoute = Loadable({
+  loader: () => import('~routes/Testing'),
+  modules: ['routes/Testing'],
+  loading: Loader,
   delay: 500,
 })
 

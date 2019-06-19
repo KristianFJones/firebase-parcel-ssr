@@ -22,6 +22,8 @@
   "dependencies": {
     "@reach/router": "^1.2.1",
     "@rmwc/button": "^5.5.2",
+    "@rmwc/circular-progress": "^5.5.2",
+    "@rmwc/dialog": "^5.5.2",
     "@rmwc/drawer": "^5.5.2",
     "@rmwc/list": "^5.5.2",
     "@types/node-fetch": "^2.3.5",

@@ -9,6 +9,7 @@ export async function build(watch: boolean = false) {
   await copy('public', 'dist/public')
   await copy('package.json', 'dist/package.json')
   await copy('package-lock.json', 'dist/package-lock.json')
+  await copy('.babelrc', 'dist/,babelrc')
 
   await run('tsc --build functions/tsconfig.json')
 
