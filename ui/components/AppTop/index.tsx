@@ -1,35 +1,29 @@
-import { navigate } from '@reach/router'
 import React, { createContext, useState } from 'react'
-import { ListOnActionEventT } from '@rmwc/list'
 import { AppBar } from '../AppBar'
 import { NavBar } from '../NavBar'
-import { Menu } from '../Routes'
 
-export const NavContext = createContext<{
-  menuOpen: boolean
-  setMenuOpen: (state: boolean) => void
-}>({
-  menuOpen: false,
-  setMenuOpen: (state) => {},
+interface NavProps {
+  open: boolean
+  toggleOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const Nav = createContext<NavProps>({
+  open: false,
+  toggleOpen: () => {},
 })
 
 export const AppHeader = () => {
-  const [open, setOpen] = useState(false)
-
-  const onAction = ({ detail }: ListOnActionEventT) => {
-    setOpen(false)
-    navigate(Menu[detail].to)
+  const useNav = (iV: boolean) => {
+    const [count, setCount] = useState<boolean>(iV)
+    return { open: count, toggleOpen: setCount }
   }
 
+  const nav = useNav(false)
+
   return (
-    <NavContext.Provider
-      value={{
-        menuOpen: open,
-        setMenuOpen: (state) => setOpen(!open),
-      }}
-    >
+    <Nav.Provider value={nav}>
       <AppBar menuClick={() => console.log('Test')} />
-      <NavBar onAction={onAction} />
-    </NavContext.Provider>
+      <NavBar />
+    </Nav.Provider>
   )
 }

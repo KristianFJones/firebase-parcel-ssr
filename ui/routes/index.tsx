@@ -1,18 +1,29 @@
+import React, { createContext, useState } from 'react'
 import { Router } from '@reach/router'
-import React from 'react'
-import { HomeRoute } from './Home'
-import { TestingRoute } from './Testing'
+import { routes } from '~/components/Routes'
 
-interface Route {
-  path: string
-  thing: any
-}
+export const Count = createContext<{
+  count: number
+  setCount: React.Dispatch<React.SetStateAction<number>>
+}>({
+  count: 0,
+  setCount: () => {},
+})
 
 export const Routes: React.FunctionComponent = () => {
+  const useCounter = (iV: number) => {
+    const [count, setCount] = useState<number>(iV)
+    return { count: count, setCount: setCount }
+  }
+
+  const counter = useCounter(0)
   return (
-    <Router>
-      <HomeRoute path='/' />
-      <TestingRoute path='/testing' />
-    </Router>
+    <Count.Provider value={counter}>
+      <Router>
+        {routes.map(({ Component, to }) => (
+          <Component path={to} key={to} />
+        ))}
+      </Router>
+    </Count.Provider>
   )
 }

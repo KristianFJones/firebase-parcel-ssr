@@ -1,7 +1,8 @@
 import React from 'react'
+import { preloadReady } from 'react-loadable'
 import ReactDOM, { Renderer } from 'react-dom'
-import { App as AppComponent } from 'ui/App'
-import { ConfigProvider } from 'ui/components/ConfigProvider'
+import { App as AppComponent } from '~/App'
+import { ConfigProvider } from '~/components/ConfigProvider'
 import { HeadProvider } from './components/HeadProvider'
 import { setStylesTarget } from 'typestyle'
 import { PropProvider } from './components/PropsProvider'
@@ -16,6 +17,7 @@ if ('serviceWorker' in navigator) {
 let STF: any
 
 async function render(renderFunction: Renderer, App: typeof AppComponent) {
+  await preloadReady()
   const StyleElement = document.getElementById('styles')
   if (StyleElement) setStylesTarget(StyleElement)
   STF = window.APP_STATE.PROPS

@@ -1,13 +1,14 @@
+import React, { useContext } from 'react'
 import { RouteComponentProps } from '@reach/router'
 import { v4 } from 'public-ip'
-import React, { useContext } from 'react'
-import { useTitle } from 'ui/components/HeadProvider'
-import { useProps, PropContext, getProp } from 'ui/components/PropsProvider'
-import { divStyle, titleStyle, bodyStyle, labelStyle } from 'ui/components/styles'
+
+import { useTitle } from '~/components/HeadProvider'
+import { useProps, PropContext, getProp } from '~/components/PropsProvider'
+import { divStyle, titleStyle, bodyStyle, labelStyle } from '~/components/styles'
 
 const getIP: getProp = async (req) => ({ IP: req ? req.headers['fastly-client-ip'] : await v4() })
 
-export const HomeRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
+const HomeRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
   useProps(getIP)
 
   const {
@@ -28,3 +29,5 @@ export const HomeRoute: React.FunctionComponent<RouteComponentProps> = (props) =
 }
 
 HomeRoute.displayName = 'Home Route'
+
+export default HomeRoute

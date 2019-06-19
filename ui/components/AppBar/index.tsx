@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { style } from 'typestyle'
-import { NavContext } from '../AppTop'
+import { Nav } from '../AppTop'
 
 const HeaderStyle = style({
   backgroundColor: '#6200ee',
@@ -52,17 +52,26 @@ interface AppBarProps {
 }
 
 export const AppBar: React.FunctionComponent<AppBarProps> = ({ menuClick }) => {
-  let { menuOpen, setMenuOpen } = useContext(NavContext)
-  return (
-    <header className={HeaderStyle}>
-      <div className={BarStyle}>
-        <svg className={MenuIconStyle} viewBox='0 0 24 24' onClick={() => setMenuOpen(!menuOpen)}>
-          <path fill='#000000' d='M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z' />
-        </svg>
-        <div className={TitleStyle}>IP Addr</div>
-      </div>
-    </header>
+  let { toggleOpen } = useContext(Nav)
+
+  const Header = useMemo(
+    () => (
+      <header className={HeaderStyle}>
+        <div className={BarStyle}>
+          <svg
+            className={MenuIconStyle}
+            viewBox='0 0 24 24'
+            onClick={() => toggleOpen((state) => true)}
+          >
+            <path fill='#000000' d='M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z' />
+          </svg>
+          <div className={TitleStyle}>IP Addr</div>
+        </div>
+      </header>
+    ),
+    [],
   )
+  return Header
 }
 
 AppBar.displayName = 'AppBar'

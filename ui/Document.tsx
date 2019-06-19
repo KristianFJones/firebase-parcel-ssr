@@ -13,9 +13,10 @@ interface DocumentProps {
   css?: string
   state: AppState
   head: JSX.Element[]
+  cssSRC: string[]
 }
 
-export function Document({ html, css, scripts, state, head }: DocumentProps) {
+export function Document({ html, css, scripts, state, head, cssSRC }: DocumentProps) {
   return (
     <html lang='en-US'>
       <head>
@@ -23,12 +24,16 @@ export function Document({ html, css, scripts, state, head }: DocumentProps) {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         {head}
         {scripts &&
-          scripts.map(
-            (src, index) => src && <link rel='preload' href={src} as='script' key={index} />,
-          )}
+          scripts
+            .reverse()
+            .map((src, index) => src && <link rel='preload' href={src} as='script' key={index} />)}
         {scripts && (
           <link rel='stylesheet' type='text/css' href={scripts[0].replace('.js', '.css')} />
         )}
+        {cssSRC &&
+          cssSRC.map((src, index) => (
+            <link rel='stylesheet' type='text/css' href={src} key={index} />
+          ))}
 
         {css ? <style id='styles'>{css}</style> : null}
       </head>

@@ -1,8 +1,8 @@
-import { RouteComponentProps, Link } from '@reach/router'
 import React from 'react'
-import { useTitle } from 'ui/components/HeadProvider'
-import { divStyle, titleStyle, bodyStyle, labelStyle } from 'ui/components/styles'
-import { useProps } from 'ui/components/PropsProvider'
+import { RouteComponentProps, Link } from '@reach/router'
+import { useTitle } from '~/components/HeadProvider'
+import { divStyle, titleStyle, bodyStyle, labelStyle } from '~/components/styles'
+import { useProps } from '~/components/PropsProvider'
 
 export const TestingRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
   useProps(async () => ({ hello: 'test' }))

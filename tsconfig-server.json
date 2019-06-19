@@ -1,6 +1,7 @@
 {
-  "extends": "../tsconfig-server.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "module": "commonjs",
     "outDir": "../dist/functions",
     "rootDir": "."
   }

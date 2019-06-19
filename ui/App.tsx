@@ -1,7 +1,7 @@
 import React from 'react'
-import { Routes } from 'ui/routes'
+import { Routes } from '~/routes'
 import { style, cssRule } from 'typestyle'
-import { AppHeader } from './components/AppTop'
+import { AppHeader } from '~/components/AppTop'
 
 cssRule('html, body', {
   margin: 0,

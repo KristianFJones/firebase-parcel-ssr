@@ -1,60 +1,34 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { List, ListItem, ListOnActionEventT } from '@rmwc/list'
+import React, { useContext, useMemo } from 'react'
+import { List, ListItem } from '@rmwc/list'
 import { DrawerContent, Drawer } from '@rmwc/drawer'
+import './styles.css'
 
-import '@material/drawer/dist/mdc.drawer.css'
-import '@material/list/dist/mdc.list.css'
-import { Menu } from 'ui/components/Routes'
-import { NavContext } from '../AppTop'
+import { routes } from '~/components/Routes'
 import { PropContext } from '../PropsProvider'
+import { navigate } from '@reach/router'
+import { Nav } from '../AppTop'
 
-export const NavBar: React.FunctionComponent<{
-  onAction: (evt: ListOnActionEventT) => void
-}> = ({ onAction }) => {
-  const { menuOpen, setMenuOpen } = useContext(NavContext)
-
-  let [isMobileState, setIsMobileState] = useState(false)
-
+export const NavBar: React.FunctionComponent = () => {
   let { req } = useContext(PropContext)
+  let { open } = useContext(Nav)
 
-  const doSizeCheck = (initial?: boolean) => {
-    const isMobile = window.innerWidth < 640
-    const menuIsOpen = initial && window.innerWidth > 640 ? true : menuOpen
-
-    if (isMobileState !== isMobile || menuOpen !== menuIsOpen) {
-      setMenuOpen(menuIsOpen)
-      setIsMobileState(isMobile)
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('resize', () => doSizeCheck())
-    doSizeCheck(false)
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener('resize', () => doSizeCheck())
-    doSizeCheck(false)
-  }, [typeof window !== 'undefined' && window.innerWidth])
+  const path = useMemo(() => (req ? req.path : window.location.pathname), [
+    req ? req.path : window.location.pathname,
+  ])
 
   return (
-    <Drawer open={menuOpen} dismissible={!isMobileState} modal={isMobileState}>
+    <Drawer open={open} dismissible style={{ position: 'fixed' }}>
       <DrawerContent>
-        <List onAction={onAction}>
-          {Menu.map(({ to, label }, index) => {
-            return (
-              <ListItem
-                activated={
-                  req
-                    ? req.path.split('/').pop() === to.split('/').pop()
-                    : window.location.pathname.split('/').pop() === to.split('/').pop()
-                }
-                key={index}
-              >
-                {label}
-              </ListItem>
-            )
-          })}
+        <List
+          onAction={({ detail }) => {
+            navigate(routes[detail].to)
+          }}
+        >
+          {routes.map(({ to, label }, index) => (
+            <ListItem activated={path === to} key={index}>
+              {label}
+            </ListItem>
+          ))}
         </List>
       </DrawerContent>
     </Drawer>
