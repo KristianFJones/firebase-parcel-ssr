@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { RouteComponentProps } from '@reach/router'
 
 import { useProps, getProp } from '~/components/PropsProvider'
-import { divStyle, titleStyle, bodyStyle, labelStyle } from '~/components/styles'
+import { titleStyle, bodyStyle, labelStyle } from '~/components/styles'
 import { Count } from '..'
 
 import '@material/button/dist/mdc.button.css'
@@ -16,7 +16,7 @@ const CountRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
   useProps(getIP)
 
   return (
-    <div className={divStyle}>
+    <>
       <span className={titleStyle}>Counter Context</span>
       <span className={bodyStyle}>
         <label className={labelStyle}>Count: </label>
@@ -29,7 +29,7 @@ const CountRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
         style={{ marginBottom: '1em', marginTop: '1em' }}
       />
       <Button label='Decrease' onClick={() => context.setCount((state) => state - 1)} raised />
-    </div>
+    </>
   )
 }
 

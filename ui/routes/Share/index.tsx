@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { RouteComponentProps } from '@reach/router'
-import { divStyle, titleStyle, bodyStyle } from '~/components/styles'
+import { titleStyle, bodyStyle } from '~/components/styles'
 import { useConfig } from '~/components/ConfigProvider'
 import { useProps } from '~/components/PropsProvider'
 import { Dialog, DialogTitle, DialogActions, DialogContent, DialogButton } from '@rmwc/dialog'
@@ -43,11 +43,9 @@ const ShareTarget: React.FunctionComponent<RouteComponentProps> = (props) => {
           </DialogButton>
         </DialogActions>
       </Dialog>
-      <div className={divStyle}>
-        <span className={titleStyle}>Share Target</span>
-        <span className={bodyStyle}>{Share}</span>
-        <Button raised label='Hello World' onClick={() => setOpen(!open)} />
-      </div>
+      <span className={titleStyle}>Share Target</span>
+      <span className={bodyStyle}>{Share}</span>
+      <Button raised label='Hello World' onClick={() => setOpen(!open)} />
     </>
   )
 }
