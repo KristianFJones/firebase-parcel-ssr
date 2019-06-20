@@ -44,7 +44,7 @@ export function Document({ html, css, scripts, state, head, cssSRC }: DocumentPr
           dangerouslySetInnerHTML={{
             __html: `window.APP_STATE = { CONFIG: ${JSON.stringify(
               state.CONFIG,
-            )}, PROPS: ${JSON.stringify(state.PROPS)}, PROPIDs: ${JSON.stringify(
+            )}, PROPS: ${JSON.stringify(state.PROPS || {})}, PROPIDs: ${JSON.stringify(
               state.PROPIDs,
             )} };`,
           }}

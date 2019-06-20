@@ -6,7 +6,6 @@ import { divStyle, titleStyle, bodyStyle, labelStyle } from '~/components/styles
 import { Count } from '..'
 
 import '@material/button/dist/mdc.button.css'
-import '@material/dialog/dist/mdc.dialog.css'
 
 import { Button } from '@rmwc/button'
 

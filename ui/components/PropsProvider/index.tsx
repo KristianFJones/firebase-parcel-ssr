@@ -1,6 +1,7 @@
 import React, { createContext, useContext, ReactNode, useState } from 'react'
 import { Request } from 'express'
 import { globalHistory } from '@reach/router'
+import until from 'async-until'
 
 export let Props: Promise<any> | undefined
 
@@ -44,7 +45,9 @@ export const PropProvider = ({ req, children, props, ids }: PropProviderProps) =
 
   globalHistory.listen(async () => {
     ids = []
-    await timeout(190)
+    await until(async () => typeof (await Props) !== 'undefined')
+    await timeout(50)
+
     setProp(await Props)
   })
 

@@ -5,10 +5,10 @@ import { useConfig } from '~/components/ConfigProvider'
 import { useProps } from '~/components/PropsProvider'
 import { Dialog, DialogTitle, DialogActions, DialogContent, DialogButton } from '@rmwc/dialog'
 
-import '@material/button/dist/mdc.button.css'
-import '@material/dialog/dist/mdc.dialog.css'
-
 import { Button } from '@rmwc/button'
+
+import '@material/button/dist/mdc.button.min.css'
+import '@material/dialog/dist/mdc.dialog.min.css'
 
 const preRender = async () => ({ hello: 'test' })
 

@@ -1,7 +1,5 @@
-import React from 'react'
 import Loadable from 'react-loadable'
-
-export const Loader = () => <div>Loading</div>
+import { Loader } from './Loader'
 
 const HomeRoute = Loadable({
   loader: () => import('~routes/Home'),
@@ -37,8 +35,16 @@ const TestingRoute = Loadable({
   delay: 500,
 })
 
+const DesignRoute = Loadable({
+  loader: () => import('~routes/DesignTest'),
+  modules: ['routes/DesignTest'],
+  loading: Loader,
+  delay: 500,
+})
+
 export const routes: NavItem[] = [
   { label: 'My IP', to: '/', Component: HomeRoute },
+  { label: 'Design', to: '/design', Component: DesignRoute },
   { label: 'Testing', to: '/testing', Component: TestingRoute },
   { label: 'Share Target', to: '/share', Component: ShareTarget },
   { label: 'Counter', to: '/count', Component: CountRoute },
