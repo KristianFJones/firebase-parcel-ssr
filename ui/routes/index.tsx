@@ -3,7 +3,7 @@ import { Router } from '@reach/router'
 import { routes } from '~/components/Routes'
 import { lightdivStyle, darkdivStyle } from '~/components/styles'
 import { Theme } from '~App'
-import { cssRule } from 'typestyle'
+import { cssRule, cssRaw } from 'typestyle'
 
 export const Count = createContext<{
   count: number
@@ -16,6 +16,23 @@ export const Count = createContext<{
 export const Routes: React.FunctionComponent = () => {
   const { mode: themeMode } = useContext(Theme)
 
+  cssRaw(`
+  body {
+    --theme-secondary-background: #fafafa
+  }
+  `)
+
+  cssRaw(`
+  @media (prefers-color-scheme: dark) {
+    body {
+
+      --mdc-theme-background: #111111;
+      --theme-secondary-background: #050500
+    }
+    
+  }
+
+`)
   cssRule('a', {
     color: themeMode === 'Dark' ? '#6200ee' : 'unset',
   })
@@ -33,9 +50,15 @@ export const Routes: React.FunctionComponent = () => {
   return (
     <Count.Provider value={counter}>
       <Router className={themeMode === 'Light' ? lightdivStyle : darkdivStyle}>
-        {routes.map(({ Component, to }) => (
-          <Component path={to} key={to} />
-        ))}
+        {routes.map((R) =>
+          'options' in R ? (
+            R.options.map(({ component: Route, path }) => (
+              <Route path={`${R.path}${path}`} key={path} />
+            ))
+          ) : (
+            <R.component path={R.path} key={R.path} />
+          ),
+        )}
       </Router>
     </Count.Provider>
   )

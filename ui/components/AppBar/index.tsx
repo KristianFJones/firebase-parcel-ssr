@@ -1,6 +1,9 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext } from 'react'
+import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from '@rmwc/top-app-bar'
 import { style } from 'typestyle'
 import { Nav } from '../AppTop'
+
+import '@material/top-app-bar/dist/mdc.top-app-bar.css'
 
 const HeaderStyle = style({
   backgroundColor: '#6200ee',
@@ -47,31 +50,36 @@ const MenuIconStyle = style({
   padding: '12px',
 })
 
-interface AppBarProps {
-  menuClick: () => void
-}
-
-export const AppBar: React.FunctionComponent<AppBarProps> = ({ menuClick }) => {
+export const AppBar: React.FunctionComponent = () => {
   let { toggleOpen } = useContext(Nav)
 
-  const Header = useMemo(
-    () => (
-      <header className={HeaderStyle}>
-        <div className={BarStyle}>
-          <svg
-            className={MenuIconStyle}
-            viewBox='0 0 24 24'
-            onClick={() => toggleOpen((state) => !state)}
-          >
-            <path fill='#000000' d='M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z' />
-          </svg>
-          <div className={TitleStyle}>IP Addr</div>
-        </div>
-      </header>
-    ),
-    [],
+  return (
+    <>
+      <TopAppBar>
+        <TopAppBarRow>
+          <TopAppBarSection>
+            <TopAppBarTitle>Firebase React</TopAppBarTitle>
+          </TopAppBarSection>
+        </TopAppBarRow>
+      </TopAppBar>
+      {/** 
+        <header className={HeaderStyle}>
+      <div className={BarStyle}>
+        <svg
+          className={MenuIconStyle}
+          viewBox='0 0 24 24'
+          onClick={() => toggleOpen((state) => !state)}
+        >
+          <path fill='#000000' d='M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z' />
+        </svg>
+        <div className={TitleStyle}>IP Addr</div>
+      </div>
+    </header>
+  
+  
+  */}
+    </>
   )
-  return Header
 }
 
 AppBar.displayName = 'AppBar'

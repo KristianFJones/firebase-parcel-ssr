@@ -8,12 +8,6 @@ const HomeRoute = Loadable({
   delay: 500,
 })
 
-interface NavItem {
-  label: string
-  to: string
-  Component: typeof HomeRoute
-}
-
 const ShareTarget = Loadable({
   loader: () => import('~routes/Share'),
   modules: ['routes/Share'],
@@ -35,17 +29,79 @@ const TestingRoute = Loadable({
   delay: 500,
 })
 
-const DesignRoute = Loadable({
-  loader: () => import('~routes/DesignTest'),
+const UIThemeDesignRoute = Loadable({
+  loader: () => import('~routes/Design/UI'),
   modules: ['routes/DesignTest'],
   loading: Loader,
   delay: 500,
 })
 
+const SubnetInfo = Loadable({
+  loader: () => import('~routes/Tools/SubnetInformation'),
+  modules: ['routes/Tools/SubnetInformation'],
+  loading: Loader,
+  delay: 500,
+})
+
+const LoginRoute = Loadable({
+  loader: () => import('~routes/Forms/Login'),
+  modules: ['routes/Forms/Login'],
+  loading: Loader,
+  delay: 500,
+})
+
+const SlidingListDesignRoute = Loadable({
+  loader: () => import('~routes/Design/SlidingList'),
+  modules: ['routes/Design/SlidingList'],
+  loading: Loader,
+  delay: 500,
+})
+
+export interface ChildNavItem {
+  label: string
+  path: string
+  component: typeof HomeRoute
+}
+
+interface ParentNavItem {
+  label: string
+  path: string
+  options: ChildNavItem[]
+}
+
+export type NavItem = ChildNavItem | ParentNavItem
+
 export const routes: NavItem[] = [
-  { label: 'My IP', to: '/', Component: HomeRoute },
-  { label: 'Design', to: '/design', Component: DesignRoute },
-  { label: 'Testing', to: '/testing', Component: TestingRoute },
-  { label: 'Share Target', to: '/share', Component: ShareTarget },
-  { label: 'Counter', to: '/count', Component: CountRoute },
+  { label: 'My IP', path: '/', component: HomeRoute },
+  {
+    label: 'Design',
+    path: '/design',
+    options: [
+      {
+        label: 'UI Theme',
+        path: '/UITheme',
+        component: UIThemeDesignRoute,
+      },
+      {
+        label: 'Sliding List',
+        path: '/SlidingList',
+        component: SlidingListDesignRoute,
+      },
+    ],
+  },
+  {
+    label: 'Tools',
+    path: '/Tools',
+    options: [
+      {
+        label: 'Subnet Information',
+        path: '/SubnetInfo',
+        component: SubnetInfo,
+      },
+    ],
+  },
+  { label: 'Login Form', path: '/login', component: LoginRoute },
+  { label: 'Testing', path: '/testing', component: TestingRoute },
+  { label: 'Share Target', path: '/share', component: ShareTarget },
+  { label: 'Counter', path: '/count', component: CountRoute },
 ]

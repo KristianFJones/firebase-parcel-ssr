@@ -1,10 +1,12 @@
 import React from 'react'
 import { Config } from 'ui/components/ConfigProvider'
+import { PathPropsObject } from '~components/PropsProvider'
 
 export interface AppState {
   CONFIG: Config
   PROPS: any
   PROPIDs: number[]
+  SESSIONPROPS: PathPropsObject[]
 }
 
 interface DocumentProps {
@@ -42,14 +44,10 @@ export function Document({ html, css, scripts, state, head, cssSRC }: DocumentPr
 
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.APP_STATE = { CONFIG: ${JSON.stringify(
-              state.CONFIG,
-            )}, PROPS: ${JSON.stringify(state.PROPS || {})}, PROPIDs: ${JSON.stringify(
-              state.PROPIDs,
-            )} };`,
+            __html: `window.APP_STATE = ${JSON.stringify(state)};`,
           }}
         />
-        {scripts && scripts.map((src, index) => <script key={index} src={src} async />)}
+        {scripts && scripts.reverse().map((src, index) => <script key={index} src={src} async />)}
       </body>
     </html>
   )

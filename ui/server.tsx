@@ -9,7 +9,13 @@ import { App } from '~/App'
 import { Config, ConfigProvider } from '~/components/ConfigProvider'
 import { HeadProvider, resetTagID } from '~/components/HeadProvider'
 import { Document } from '~/Document'
-import { resetProps, PropProvider, Props, resetPageID } from '~/components/PropsProvider'
+import {
+  resetProps,
+  PropProvider,
+  Props,
+  resetPageID,
+  PathPropsObject,
+} from '~/components/PropsProvider'
 import { readJSON } from 'fs-extra'
 
 export async function uiServer(req: Request, res: Response, config: Config) {
@@ -36,7 +42,8 @@ export async function uiServer(req: Request, res: Response, config: Config) {
 
   let STF: any
   let PropIDs: number[] = []
-  console.log('Req Path', req.path)
+  let sessionProps: PathPropsObject[] = []
+
   let html = ''
   try {
     try {
@@ -45,7 +52,12 @@ export async function uiServer(req: Request, res: Response, config: Config) {
           <ConfigProvider {...config}>
             <HeadProvider tags={head}>
               <Capture report={(moduleName) => modules.push(moduleName)}>
-                <PropProvider req={req} props={await Props} ids={PropIDs}>
+                <PropProvider
+                  req={req}
+                  props={await Props}
+                  sessionProps={sessionProps}
+                  path={req.path}
+                >
                   <App />
                 </PropProvider>
               </Capture>
@@ -53,15 +65,17 @@ export async function uiServer(req: Request, res: Response, config: Config) {
           </ConfigProvider>
         </ServerLocation>,
       )
+      sessionProps = [{ path: req.path, props: await Props }]
       STF = await Props
     } catch {
+      sessionProps = [{ path: req.path, props: await Props }]
       STF = await Props
     }
     html = renderToString(
       <ServerLocation url={req.url}>
         <ConfigProvider {...config}>
           <HeadProvider tags={head}>
-            <PropProvider req={req} props={STF} ids={PropIDs}>
+            <PropProvider req={req} props={STF} sessionProps={sessionProps} path={req.path}>
               <App />
             </PropProvider>
           </HeadProvider>
@@ -97,7 +111,7 @@ export async function uiServer(req: Request, res: Response, config: Config) {
   const document = renderToString(
     <Document
       html={html}
-      state={{ CONFIG: config, PROPS: STF, PROPIDs: PropIDs }}
+      state={{ CONFIG: config, PROPS: STF || {}, PROPIDs: PropIDs, SESSIONPROPS: sessionProps }}
       scripts={scripts}
       head={head}
       css={getStyles()}

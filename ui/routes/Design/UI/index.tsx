@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { Chip, ChipSet } from '@rmwc/chip'
 
 import { Switch } from '@rmwc/switch'
@@ -10,22 +10,19 @@ import { titleStyle } from '~/components/styles'
 
 import '@material/chips/dist/mdc.chips.css'
 import { Theme } from '~App'
+import { useTitle } from '~components/HeadProvider'
 
 const DesignTestRoute = () => {
+  useTitle('Design Theme')
   const { setTheme, mode: themeMode } = useContext(Theme)
-  const [checked, setChecked] = useState<boolean>(themeMode === 'Light')
-
-  useEffect(() => {
-    setTheme(checked ? 'Light' : 'Dark')
-  }, [checked])
 
   return (
     <>
       <span className={titleStyle}>Design</span>
       <Switch
         label={themeMode}
-        checked={checked}
-        onChange={(evt) => setChecked(evt.currentTarget.checked)}
+        checked={themeMode === 'Light'}
+        onChange={(evt) => setTheme(evt.currentTarget.checked ? 'Light' : 'Dark')}
       />
       <ChipSet>
         <Chip selected label='Cookies' />

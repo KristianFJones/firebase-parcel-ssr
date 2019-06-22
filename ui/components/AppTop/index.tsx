@@ -1,29 +1,35 @@
-import React, { createContext, useState } from 'react'
-import { AppBar } from '../AppBar'
+import React, { useState } from 'react'
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
+} from '@rmwc/top-app-bar'
+import '@material/top-app-bar/dist/mdc.top-app-bar.css'
 import { NavBar } from '../NavBar'
-
-interface NavProps {
-  open: boolean
-  toggleOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-export const Nav = createContext<NavProps>({
-  open: false,
-  toggleOpen: () => {},
-})
+import Icon from '@mdi/react'
+import { mdiMenu } from '@mdi/js'
 
 export const AppHeader = () => {
-  const useNav = (iV: boolean) => {
-    const [count, setCount] = useState<boolean>(iV)
-    return { open: count, toggleOpen: setCount }
-  }
-
-  const nav = useNav(false)
+  const [open, setOpen] = useState<boolean>(false)
 
   return (
-    <Nav.Provider value={nav}>
-      <AppBar menuClick={() => console.log('Test')} />
-      <NavBar />
-    </Nav.Provider>
+    <>
+      <TopAppBar>
+        <TopAppBarRow>
+          <TopAppBarSection>
+            <TopAppBarNavigationIcon
+              icon={<Icon path={mdiMenu} />}
+              onClick={() => setOpen(!open)}
+            />
+            <TopAppBarTitle>Firebase React</TopAppBarTitle>
+          </TopAppBarSection>
+        </TopAppBarRow>
+      </TopAppBar>
+      <TopAppBarFixedAdjust />
+      <NavBar open={open} />
+    </>
   )
 }

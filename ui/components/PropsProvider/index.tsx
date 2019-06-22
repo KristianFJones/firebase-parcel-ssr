@@ -3,6 +3,11 @@ import { Request } from 'express'
 import { globalHistory } from '@reach/router'
 import until from 'async-until'
 
+export interface PathPropsObject {
+  path: string
+  props: any
+}
+
 export let Props: Promise<any> | undefined
 
 export type getProp = (req?: import('express').Request) => Promise<any>
@@ -17,14 +22,14 @@ export const resetProps = () => {
 
 interface PropContextType {
   props: any
-  ids: number[]
+  sessionProps: PathPropsObject[]
   setSTF: (prop: (req?: Request) => Promise<any>, id: number) => void
   req?: Request
 }
 
 export const PropContext = createContext<PropContextType>({
   props: Props,
-  ids: [],
+  sessionProps: [],
   setSTF: () => {},
   req: undefined,
 })
@@ -35,31 +40,38 @@ interface PropProviderProps {
   children: ReactNode
   req?: Request
   props: any
-  ids: number[]
+  sessionProps: PathPropsObject[]
+  path: string
 }
 
 const timeout = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export const PropProvider = ({ req, children, props, ids }: PropProviderProps) => {
+export const PropProvider = ({ req, children, props, sessionProps, path }: PropProviderProps) => {
   const [prop, setProp] = useState(props)
 
-  globalHistory.listen(async () => {
-    ids = []
-    await until(async () => typeof (await Props) !== 'undefined')
-    await timeout(50)
-
-    setProp(await Props)
+  globalHistory.listen(async (c) => {
+    const oldProps = sessionProps.find(({ path }) => path === c.location.pathname)
+    if (oldProps) setProp(oldProps.props)
+    else {
+      await until(async () => typeof (await Props) !== 'undefined', { timeout: 2500 })
+      await timeout(50)
+      sessionProps.push({ path: c.location.pathname, props: await Props })
+      setProp(await Props)
+    }
   })
 
   return (
     <PropContext.Provider
       value={{
-        ids,
+        sessionProps: sessionProps,
         props: prop,
         setSTF: async (prop, id) => {
-          if (ids.includes(id)) return
-          Props = prop(req)
-          ids.push(id)
+          const oldProps = sessionProps.find(
+            ({ path: pth }) => pth === (req ? req.path : globalHistory.location.pathname),
+          )
+
+          if (oldProps) Props = oldProps.props
+          else Props = prop(req)
         },
         req,
       }}

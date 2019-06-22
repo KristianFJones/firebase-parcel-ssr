@@ -8,10 +8,12 @@ import { Count } from '..'
 import '@material/button/dist/mdc.button.css'
 
 import { Button } from '@rmwc/button'
+import { useTitle } from '~components/HeadProvider'
 
 const getIP: getProp = async (req) => ({ test: 'Hello' })
 
 const CountRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
+  useTitle('Count Routes')
   const context = useContext(Count)
   useProps(getIP)
 

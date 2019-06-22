@@ -15,7 +15,7 @@ const HomeRoute: React.FunctionComponent<RouteComponentProps> = (props) => {
     props: { IP },
   } = useContext(PropContext)
 
-  useTitle('Example Page')
+  useTitle('Firebase React - Home')
 
   return (
     <>
