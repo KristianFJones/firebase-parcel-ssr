@@ -5,9 +5,8 @@ import { App as AppComponent } from '~/App'
 import { ConfigProvider } from '~/components/ConfigProvider'
 import { HeadProvider } from './components/HeadProvider'
 import { setStylesTarget } from 'typestyle'
-import { PropProvider, Props } from './components/PropsProvider'
-
-import until from 'async-until'
+import { PropProvider, test, Props } from './components/PropsProvider'
+import HomeRoute from '~routes/Home'
 
 let STF: any
 
@@ -38,9 +37,9 @@ preloadReady().then(() => render(ReactDOM.hydrate, AppComponent))
 const hot = (module as any).hot
 if (hot && hot.accept) {
   hot.accept(async () => {
-    await until(async () => typeof (await Props) !== 'undefined')
+    window.APP_STATE.SESSIONPROPS = []
     await timeout(50)
-
+    test(await Props)
     render(ReactDOM.render, require('ui/App').App)
   })
 }

@@ -1,17 +1,32 @@
-import React, { createContext, useState, useContext } from 'react'
+import React, { createContext, useState, useContext, ReactNode } from 'react'
 import { Router } from '@reach/router'
-import { routes } from '~/components/Routes'
+import { routes, NavItem } from '~/components/Routes'
 import { lightdivStyle, darkdivStyle } from '~/components/styles'
 import { Theme } from '~App'
 import { cssRule, cssRaw } from 'typestyle'
+import { Netmask } from '@hg8496/netmask'
 
-export const Count = createContext<{
-  count: number
-  setCount: React.Dispatch<React.SetStateAction<number>>
+import '@material/theme/dist/mdc.theme.css'
+
+export const IP = createContext<{
+  IPAddr?: Netmask
+  setIP: React.Dispatch<React.SetStateAction<Netmask | undefined>>
 }>({
-  count: 0,
-  setCount: () => {},
+  setIP: () => {},
 })
+
+const HandleRoutes = (routes: NavItem[], parent?: string): ReactNode => {
+  return routes.map((Route) =>
+    'options' in Route ? (
+      HandleRoutes(Route.options, Route.path)
+    ) : (
+      <Route.component
+        path={parent ? `${parent}${Route.path}` : Route.path}
+        key={parent ? `${parent}${Route.path}` : Route.path}
+      />
+    ),
+  )
+}
 
 export const Routes: React.FunctionComponent = () => {
   const { mode: themeMode } = useContext(Theme)
@@ -25,7 +40,6 @@ export const Routes: React.FunctionComponent = () => {
   cssRaw(`
   @media (prefers-color-scheme: dark) {
     body {
-
       --mdc-theme-background: #111111;
       --theme-secondary-background: #050500
     }
@@ -41,25 +55,21 @@ export const Routes: React.FunctionComponent = () => {
     color: themeMode === 'Dark' ? 'white' : 'unset',
   })
 
-  const useCounter = (iV: number) => {
-    const [count, setCount] = useState<number>(iV)
-    return { count: count, setCount: setCount }
+  cssRule('label.mdc-floating-label', {
+    color: themeMode === 'Dark' ? 'white' : 'unset',
+  })
+
+  const useIP = () => {
+    const [IPAddr, setIP] = useState<Netmask>()
+    return { IPAddr, setIP }
   }
 
-  const counter = useCounter(0)
+  const IPAddr = useIP()
   return (
-    <Count.Provider value={counter}>
+    <IP.Provider value={IPAddr}>
       <Router className={themeMode === 'Light' ? lightdivStyle : darkdivStyle}>
-        {routes.map((R) =>
-          'options' in R ? (
-            R.options.map(({ component: Route, path }) => (
-              <Route path={`${R.path}${path}`} key={path} />
-            ))
-          ) : (
-            <R.component path={R.path} key={R.path} />
-          ),
-        )}
+        {HandleRoutes(routes)}
       </Router>
-    </Count.Provider>
+    </IP.Provider>
   )
 }

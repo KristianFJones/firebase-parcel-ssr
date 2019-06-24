@@ -41,7 +41,6 @@ export async function uiServer(req: Request, res: Response, config: Config) {
   let modules: string[] = []
 
   let STF: any
-  let PropIDs: number[] = []
   let sessionProps: PathPropsObject[] = []
 
   let html = ''
@@ -95,24 +94,23 @@ export async function uiServer(req: Request, res: Response, config: Config) {
   modules.map((moduleName) =>
     Object.entries(parcelManifest)
       .filter(([a, b]) => {
-        a.includes(moduleName.replace('~/', '')) && test.push(b)
+        if (a === moduleName) {
+          test.push(b)
+        }
 
-        return (
-          a.includes(moduleName.replace('~/', '')) ||
-          test.some((a2) => a2.replace('.js', '.css') === b)
-        )
+        return a === moduleName || test.some((a2) => a2.replace('.js', '.css') === b)
       })
       .map(([modulePath, file]) => {
         if (file.includes('.css')) cssSRC.unshift(file)
-        else if (file.includes('.js')) scripts.unshift(file)
+        else if (file.includes('.js')) scripts.push(file)
       }),
   )
 
   const document = renderToString(
     <Document
       html={html}
-      state={{ CONFIG: config, PROPS: STF || {}, PROPIDs: PropIDs, SESSIONPROPS: sessionProps }}
-      scripts={scripts}
+      state={{ CONFIG: config, PROPS: STF || {}, SESSIONPROPS: sessionProps }}
+      scripts={scripts.reverse()}
       head={head}
       css={getStyles()}
       cssSRC={cssSRC}

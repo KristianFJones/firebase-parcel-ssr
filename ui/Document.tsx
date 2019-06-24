@@ -5,7 +5,6 @@ import { PathPropsObject } from '~components/PropsProvider'
 export interface AppState {
   CONFIG: Config
   PROPS: any
-  PROPIDs: number[]
   SESSIONPROPS: PathPropsObject[]
 }
 

@@ -4,24 +4,12 @@ import React, { createContext, useState, useEffect } from 'react'
 import { Routes } from '~/routes'
 import { style, cssRule } from 'typestyle'
 import { AppHeader } from '~/components/AppTop'
-import { ThemeProvider } from '@rmwc/theme'
 import { DrawerAppContent } from '@rmwc/drawer'
 
 cssRule('html, body, #app', {
   margin: 0,
   padding: 0,
   height: '100%',
-})
-
-const divStyle = style({
-  flex: '1 1 auto',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '93.185%',
-  willChange: 'margin-left',
-  position: 'fixed',
-  width: '100%',
 })
 
 type ThemeTypes = 'Dark' | 'Light'
@@ -51,20 +39,21 @@ export const App: React.FunctionComponent = () => {
 
   const theme = useTheme('Light')
 
+  const divStyle = style({
+    justifyContent: 'center',
+    backgroundColor: theme.mode === 'Dark' ? '#111111' : '#eee',
+    flex: '1 1 auto',
+    display: 'flex',
+    alignItems: 'center',
+    willChange: 'margin-left',
+  })
+
   return (
     <Theme.Provider value={theme}>
-      <ThemeProvider
-        options={{
-          background: theme.mode === 'Light' ? '#eee' : '#111111',
-          surface: theme.mode === 'Light' ? '#fff' : '#121212',
-        }}
-        style={{ height: '100%' }}
-      >
-        <AppHeader />
-        <DrawerAppContent className={`${divStyle} mdc-theme--background`}>
-          <Routes />
-        </DrawerAppContent>
-      </ThemeProvider>
+      <AppHeader />
+      <DrawerAppContent className={divStyle}>
+        <Routes />
+      </DrawerAppContent>
     </Theme.Provider>
   )
 }

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, ReactNode, useState } from 'react'
 import { Request } from 'express'
 import { globalHistory } from '@reach/router'
-import until from 'async-until'
 
 export interface PathPropsObject {
   path: string
@@ -44,20 +43,26 @@ interface PropProviderProps {
   path: string
 }
 
+export let test: Function
+
 const timeout = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const PropProvider = ({ req, children, props, sessionProps, path }: PropProviderProps) => {
   const [prop, setProp] = useState(props)
 
+  test = (test: any) => setProp(test)
+
   globalHistory.listen(async (c) => {
-    const oldProps = sessionProps.find(({ path }) => path === c.location.pathname)
-    if (oldProps) setProp(oldProps.props)
+    const oldProps = sessionProps.find(({ path: pth }) => pth === c.location.pathname)
+
+    if (oldProps) setProp(oldProps.props || {})
     else {
-      await until(async () => typeof (await Props) !== 'undefined', { timeout: 2500 })
       await timeout(50)
-      sessionProps.push({ path: c.location.pathname, props: await Props })
-      setProp(await Props)
+      if (typeof (await Props) === 'undefined') return
+      sessionProps.push({ path: c.location.pathname, props: (await Props) || {} })
+      setProp((await Props) || {})
     }
+    Props = undefined
   })
 
   return (

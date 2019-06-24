@@ -2,3 +2,33 @@
 @import '@material/list/dist/mdc.list.css';
 @import '@rmwc/list/collapsible-list.css';
 @import '@rmwc/icon/icon.css';
+
+
+.mdc-drawer__content {
+  height: calc(100vh - 15rem);
+  padding-bottom: 88px;
+  padding-top: 0.5rem;
+}
+
+.mdc-drawer--dismissible.mdc-drawer--open + .app__content {
+  max-width: calc(100% - 16rem);
+}
+
+.mdc-drawer--dismissible {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  z-index: auto;
+}
+
+#app  {
+  position: fixed;
+  height: 100%;
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  overflow-y: auto; 
+}
